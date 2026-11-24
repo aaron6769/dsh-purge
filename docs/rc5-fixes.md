@@ -1,4 +1,4 @@
-# dsh-purge rc.5 修复版（版本号仍为 1.1.71）
+# dsh-purge 1.1.72（DSH 0.2.2-rc.5 修复版）
 
 适配：DeepSeek Harness **0.2.2-rc.5** 官方桌面版（`X:\DeepSeek Harness`）。
 基线：`aaron6769/dsh-purge` master = 上游 1.1.71 **逐字节相同**（仅 CRLF + 镜像说明），所以"升级"= 自己改。
@@ -35,7 +35,8 @@ for (const method of ["readSync", "writeSync", "closeSync", "fsyncSync"]) {
 | 82 | DESKTOP_SHELL_PROFILE_FALLBACK | `//#region` 不再紧跟 api-gateway import，改以 import 单行作锚点 |
 
 配套 `lib/core.js`：导入 `RC5_FIXES` 并在 `ALL_PATCHES` 之后并入对应 patch 的 `replacements`；`targetFiles()` 增加 `tools-pipeline`、`tool-executor-ptc`；#62/#60 的 `file` 列表追加这两个键。
-**版本号保持 1.1.71、`dshTarget` 保持 0.2.0-rc.2**——插件的兼容判定只读 `engines.dsh` / `@deepseek-ai/dsh*` peer，不读 `dshTarget`；改版本号只会跟 pnpm-lock 打架。
+**版本 1.1.72、`dshTarget` 保持 0.2.0-rc.2**——插件的兼容判定只读 `engines.dsh` / `@deepseek-ai/dsh*` peer，不读 `dshTarget`。
+本机已装的那份副本仍是 1.1.71（同一份代码，只是版本号没跟），不影响运行。
 
 ## 3. 两个踩过的坑（写进流程）
 
@@ -65,7 +66,17 @@ apply 后 68/82 applied,  0 pending
 | 71 | 目标文件（liangshen 预设）未安装 | 无 |
 | 28 / 30 / 31 / 64 / 65 / 76 | 对应组件本机未安装 / 版本不适用（na） | 无 |
 
-## 6. 换包与回滚
+## 6. 安装 / 升级
+
+三种装法，任选其一（装完必须重启 dsh）：
+
+1. **插件管理器（桌面版）**：安装 spec 填 `github:aaron6769/dsh-purge`；想钉死这版就填 `github:aaron6769/dsh-purge#v1.1.72-rc5fix`。
+2. **CLI 安装到指定 profile**：`dsh plugin --profile <name> add github:aaron6769/dsh-purge`（桌面 profile 由应用托管，CLI 会拒绝，走第 1 种）。
+3. **离线包**：`https://github.com/aaron6769/dsh-purge/archive/refs/heads/master.zip`，解压覆盖 `<profile>/node_modules/dsh-purge`。
+
+装上后自检：`dsh-purge --status` 应显示 `68/82 已清洗, 0 待清洗`，且 `app.asar` 那行不出现。
+
+## 7. 换包与回滚
 
 换包（已执行完毕，保留备查）：
 
